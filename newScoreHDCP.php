@@ -34,37 +34,41 @@
     $password = "resnerb";
     $database = "golfHDCP";
     
-    $conn = new mysqli($servername, $username, $password, $database);
+    $conn = new mysqli($servername, $username, $password);
     //Check if connection works
     if ($conn->connect_error)
     {
         die ("Connection failed: " . $conn->connect_error);
     }
-    
-    //echo "$_POST variables passed in: " . json_encode($_POST) . "<br>";
-    
-    // Create variables to submit to table
-    if ($_POST['process'] === "addScore")
-    {
-    // Process adding a new score
-    $playerName = "Player1";
-    $courseName = $_POST['courseName'];
-    $score = $_POST['score']+0;
-    $datePlayed = $_POST['datePlayed'];
-    $sql = "INSERT INTO playerScores (playerName, golfCourseName, score, datePlayed)
-    VALUES ('$playerName', '$courseName', '$score', '$datePlayed')";
-    if ($conn->query($sql) === TRUE) {
-        echo "New row successfully added to playerScores table.<br>";
-    } else {
-        echo "Error adding row to playerScores table: " . $conn->error;
-    }
-    }
-    else if ($_POST['process'] == "addCourse")
-    {
-    }
-    
-    //Throws user back to currentHDCP.php
-    header("location: currentHDCP.php");
-    exit();
-    
 ?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>newScoreHDCP</title>
+</head>
+<body>
+<h1>Post a New Score</h1>
+
+<form method="post" action="process.php">
+<input type="hidden" name="process" value="addScore">
+Date Played [YYYY-MM-DD]:<br>
+<input type="text" name="datePlayed">
+<br>
+Course Name:<br>
+<input type="text" name="courseName">
+<br>
+Score:<br>
+<input type="text" name="score">
+<br>
+<br>
+<input type="submit" value="Submit Score">
+</form>
+
+<form method="post" action="newCourseHDCP.php">
+<br>
+<input type="submit" value="Add New Course">
+</form>
+</body>
+</html>

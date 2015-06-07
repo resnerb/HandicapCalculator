@@ -4,6 +4,8 @@
     //echo "Server parameters: " . json_encode($_SERVER) . "<br>";
     //echo "Server Request Method: " . $_SERVER['REQUEST_METHOD'] . "<br>";
     //echo "Server HTTP Referer: " . $_SERVER['HTTP_REFERER'] . "<br>";
+    echo "Entering currentHDCP<br>";
+    echo "Session parameters: " . json_encode($_SESSION) . "<br>";
     if(!isset($_SESSION['user']))
     {
         // We have been assured that the only way we will get to this page with a
@@ -15,11 +17,12 @@
             // TODO Need to figure out how to make the redirection delay so the user can
             // see the above comment about why they are being redirected
             sleep(3);
-            header("location: login.php");
+            header("location: loginHDCP.php");
             exit();
         }
     }
     
+    echo "After checking for login currentHDCP<br>";
     //echo "Session parameters: " . json_encode($_SESSION) . "<br>";
     
     //$servername = "oniddb.cws.oregonstate.edu";
@@ -45,6 +48,8 @@
         //TODO Should exit if database can't be created
     }
     
+    echo "After creatubg database or checking that it exists already in currentHDCP<br>";
+    
     // Select the golfHDCP as the default database
     mysqli_select_db($conn, $database);
     
@@ -56,16 +61,18 @@
     // Perform the query and store the result
     $result = $conn->query($sql);
     
+    echo "Before checking if tables exist in currentHDCP<br>";
     // If there are no rows returned then the table does not exist
     if ($result->num_rows == 0)
     {
+        echo "Just before creating playerscore table currentHDCP<br>";
         // Create playerScore table
         $sql = "CREATE TABLE playerScores (
         playerID INT (5) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
         playerName VARCHAR (255) NOT NULL,
         golfCourseName VARCHAR (255) NOT NULL,
         score INT (3) UNSIGNED NOT NULL,
-        datePlayed DATE NOT NULL,
+        datePlayed DATE NOT NULL
         )";
         if ($conn->query($sql) === TRUE) {
             echo "Table playerScores created successfully<br>";
@@ -79,7 +86,7 @@
         slope INT (3) UNSIGNED NOT NULL,
         rating FLOAT (4,1) NOT NULL,
         par INT (2) UNSIGNED,
-        website VARCHAR (255),
+        website VARCHAR (255)
         )";
         if ($conn->query($sql) === TRUE) {
             echo "Table golfCourses created successfully<br>";
@@ -102,11 +109,11 @@
         $nv = $_SESSION['numVisits'] + 0;
         if ($nv == 1)
         {
-            echo 'Hello ' . $_SESSION['user'] . ' you have visited this site ' . $_SESSION['numVisits'] . ' time before. Click <a href="logout.php">here</a> to logout.<br>';
+            echo 'Hello ' . $_SESSION['user'] . ' you have visited this site ' . $_SESSION['numVisits'] . ' time before. Click <a href="logoutHDCP.php">here</a> to logout.<br>';
         }
         else
         {
-            echo 'Hello ' . $_SESSION['user'] . ' you have visited this site ' . $_SESSION['numVisits'] . ' times before. Click <a href="logout.php">here</a> to logout.<br>';
+            echo 'Hello ' . $_SESSION['user'] . ' you have visited this site ' . $_SESSION['numVisits'] . ' times before. Click <a href="logoutHDCP.php">here</a> to logout.<br>';
         }
         echo 'If you want to be directed to the content2 page, click <a href="content2.php">here</a>!';
         
@@ -128,8 +135,13 @@
         }
     }
 ?>
+
+<form action="newScoreHDCP.php">
+    <input type="submit" value="Enter New Score">
+</form>
+
 <?php
-    $sql = "SELECT * FROM Videos";
+    $sql = "SELECT * FROM playerScores";
     $result = $conn->query($sql);
     
     if ($result->num_rows > 0) {
@@ -155,7 +167,7 @@
         }
         echo "</table>";
     } else {
-        echo "<br>There are no movies entered in the database!<br>";
+        echo "<br>There are no scores entered in the database!<br>";
     }
     $conn->close();
 ?>
