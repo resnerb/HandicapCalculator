@@ -4,8 +4,8 @@
     //echo "Server parameters: " . json_encode($_SERVER) . "<br>";
     //echo "Server Request Method: " . $_SERVER['REQUEST_METHOD'] . "<br>";
     //echo "Server HTTP Referer: " . $_SERVER['HTTP_REFERER'] . "<br>";
-    echo "Entering currentHDCP<br>";
-    echo "Session parameters: " . json_encode($_SESSION) . "<br>";
+
+    //echo "Session parameters: " . json_encode($_SESSION) . "<br>";
     if(!isset($_SESSION['user']))
     {
         // We have been assured that the only way we will get to this page with a
@@ -13,17 +13,14 @@
         if ($_SERVER['REQUEST_METHOD'] !== "POST")
         {
             // Since the user is not correctly logged in, then redirect back to login page
-            echo "You must be logged in to access this page! You will be redirected to the login page!";
+            //echo "You must be logged in to access this page! You will be redirected to the login page!";
             // TODO Need to figure out how to make the redirection delay so the user can
             // see the above comment about why they are being redirected
-            sleep(3);
-            header("location: loginHDCP.php");
+            //sleep(3);
+            header("Location: loginHDCP.php");
             exit();
         }
     }
-    
-    echo "After checking for login currentHDCP<br>";
-    //echo "Session parameters: " . json_encode($_SESSION) . "<br>";
     
     //$servername = "oniddb.cws.oregonstate.edu";
     //$username = "resnerb-db";
@@ -34,24 +31,22 @@
     $password = "resnerb";
     $database = "golfHDCP";
     
-    $conn = new mysqli($servername, $username, $password);
+    $conn = new mysqli($servername, $username, $password, $database);
     //Check if connection works
     if ($conn->connect_error)
     {
         die ("Connection failed: " . $conn->connect_error);
     }
     //Create database if it doesn't already exist
-    $sql = "CREATE DATABASE IF NOT EXISTS " . $database;
-    if ($conn->query($sql) === FALSE)
-    {
-        die ("Database creation failed: " . $conn->error);
+    //$sql = "CREATE DATABASE IF NOT EXISTS " . $database;
+    //if ($conn->query($sql) === FALSE)
+    //{
+    //    die ("Database creation failed: " . $conn->error);
         //TODO Should exit if database can't be created
-    }
-    
-    echo "After creatubg database or checking that it exists already in currentHDCP<br>";
+    //}
     
     // Select the golfHDCP as the default database
-    mysqli_select_db($conn, $database);
+    //mysqli_select_db($conn, $database);
     
     // Check if the playerScores table exists in the golfHDCP database
     // If playerScores table does not exist then we know we must create both the
@@ -60,12 +55,11 @@
     
     // Perform the query and store the result
     $result = $conn->query($sql);
+    echo "Num rows for tables in DB: " . $result->num_rows . "<br>";
     
-    echo "Before checking if tables exist in currentHDCP<br>";
     // If there are no rows returned then the table does not exist
     if ($result->num_rows == 0)
     {
-        echo "Just before creating playerscore table currentHDCP<br>";
         // Create playerScore table
         $sql = "CREATE TABLE playerScores (
         playerID INT (5) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -74,11 +68,9 @@
         score INT (3) UNSIGNED NOT NULL,
         datePlayed DATE NOT NULL
         )";
-        if ($conn->query($sql) === TRUE) {
-            echo "Table playerScores created successfully<br>";
-        } else {
-            echo "Error creating table: " . $conn->error;
-        }
+        
+        $conn->query($sql);
+        
         // Create golfCourses table
         $sql = "CREATE TABLE golfCourses (
         courseID INT (5) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -88,13 +80,10 @@
         par INT (2) UNSIGNED,
         website VARCHAR (255)
         )";
-        if ($conn->query($sql) === TRUE) {
-            echo "Table golfCourses created successfully<br>";
-        } else {
-            echo "Error creating table: " . $conn->error;
-        }
+        
+        $conn->query($sql);
     }
-    ?>
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -103,67 +92,57 @@
 </head>
 <body>
 <?php
-    if (isset($_SESSION['user']))
-    {
-        // Make numVisits into an integer by adding a zero to it
-        $nv = $_SESSION['numVisits'] + 0;
-        if ($nv == 1)
-        {
-            echo 'Hello ' . $_SESSION['user'] . ' you have visited this site ' . $_SESSION['numVisits'] . ' time before. Click <a href="logoutHDCP.php">here</a> to logout.<br>';
-        }
-        else
-        {
-            echo 'Hello ' . $_SESSION['user'] . ' you have visited this site ' . $_SESSION['numVisits'] . ' times before. Click <a href="logoutHDCP.php">here</a> to logout.<br>';
-        }
-        echo 'If you want to be directed to the content2 page, click <a href="content2.php">here</a>!';
-        
-    }
-    else
+    if (!isset($_SESSION['user']))
     {
         $username = $_POST["username"];
         
         if ($username === '' || !isset($username))
         {
-            echo 'A username must be entered. Click <a href="login.php">here</a> to return to the login screen.';
+            echo 'A username must be entered. Click <a href="loginHDCP.php">here</a> to return to the login screen.';
         }
         else
         {
             $_SESSION['user'] = $username;
-            $_SESSION['numVisits'] = 0;
-            echo 'Hello ' . $_SESSION['user'] . ' you have visited this site ' . $_SESSION['numVisits'] . ' times before. Click <a href="logout.php">here</a> to logout.<br>';
-            echo 'If you want to be directed to the content2 page, click <a href="content2.php">here</a>!';
         }
     }
-?>
-
-<form action="newScoreHDCP.php">
-    <input type="submit" value="Enter New Score">
-</form>
-
-<?php
-    $sql = "SELECT * FROM playerScores";
-    $result = $conn->query($sql);
     
-    if ($result->num_rows > 0) {
-        echo "<table border='1'><tr><th>Date Played</th><th>Score</th><th>Par</th><th>Slope</th><th>Rating</th><th>Course</th></tr>";
+    $username = $_SESSION['user'];
+    echo "Handicap Index and Scores for Player: " . $username . "<br><br>";
+    
+    echo "<form action='newScoreHDCP.php' method='POST'>";
+    echo "<input type='submit' value='Enter New Score'>";
+    echo "</form>";
+
+    $sql = "SELECT * FROM playerScores WHERE playerName='$username' ORDER BY datePlayed DESC LIMIT 20";
+    $playerResult = $conn->query($sql);
+    
+    if ($playerResult->num_rows > 0) {
+        // Create an array to hold the handicap differentials
+        $hdArray = array();
+        
+        echo "<table border='1'><tr><th>Date Played</th><th>Score</th><th>Par</th><th>Slope</th><th>Rating</th><th>Course</th><th>Handicap Differential</th></tr>";
         // output data of each row
-        while($row = $result->fetch_assoc()) {
-            $availStatus = "Checked out";
-            $bt = "Check In";
-            if ($row["availability"])
-            {
-                $availStatus = "Available";
-                $bt = "Check Out";
-            }
+        while($p_data = mysqli_fetch_array($playerResult)) {
             
-            $rid = $row["id"];
+            $courseName = $p_data['golfCourseName'];
+            $sql = "SELECT * FROM golfCourses WHERE name='$courseName'";
+            $courseResult = $conn->query($sql);
+            
+            if ($courseResult->num_rows > 0) {
+                $gc_data = mysqli_fetch_array($courseResult);
+                
+                $hd = ($p_data['score'] - $gc_data['rating']) * 113 / $gc_data['slope'];
+                $hdArray[] = $hd;
+                
+                echo "<tr><td>".$p_data["datePlayed"]."</td><td>".$p_data["score"]."</td><td>".$gc_data["par"]."</td><td>".$gc_data["slope"]."</td><td>".$gc_data["rating"]."</td><td>".$gc_data["name"]."</td><td>".$hd."</td></tr>";
+            }
             
             // Remove button was working prior to adding the check in/out button - don't know why
             // the remove button stopped working!
-            $removeButtonText = "<form action='remove_row.php' method='post'><button type='submit' name='removeRowID' value='" . $rid . "'>Remove Movie</button>";
-            $checkButtonText = "<form action='check_availability.php' method='post'><button type='submit' name='checkRowID' value='" . $rid . "'>".$bt."</button>";
+            //$removeButtonText = "<form action='remove_row.php' method='post'><button type='submit' name='removeRowID' value='" . $rid . "'>Remove Movie</button>";
+            //$checkButtonText = "<form action='check_availability.php' method='post'><button type='submit' name='checkRowID' value='" . $rid . "'>".$bt."</button>";
             
-            echo "<tr><td>".$checkButtonText."</td><td>".$availStatus."</td><td>".$row["title"]."</td><td>".$row["category"]."</td><td>".$row["minutes"]."</td><td>". $removeButtonText ."</td></tr>";
+            
         }
         echo "</table>";
     } else {
@@ -171,5 +150,7 @@
     }
     $conn->close();
 ?>
+print_r($hdArray);
+
 </body>
 </html>

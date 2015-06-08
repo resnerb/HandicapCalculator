@@ -5,7 +5,7 @@
     if(isset($_SESSION['user']))
     {
         // If the user is logged in, then redirect to the content1 page
-        header("location: currentHDCP.php");
+        header("Location: currentHDCP.php");
         exit();
     }
     ?>
