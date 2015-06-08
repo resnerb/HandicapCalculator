@@ -92,6 +92,10 @@
 <form align="center" method="post" action="newCourseHDCP.php">
     <input type="submit" value="Add New Course">
 </form>
+<br>
+<form align="center" method="post" action="currentHDCP.php">
+<input type="submit" value="Go To Main Page">
+</form>
 
 </body>
 </html>

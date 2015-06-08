@@ -70,6 +70,9 @@
 
 <br>
 <p id="header">The Course Rating is the numerical value given by the UGSA to each set of tees on a course. It approximates the number of strokes it should take a scratch golfer to finish the course. Most courses make this information available to their golfers; check the course website or inquire at the clubhouse.</p><br>
-<p id="header">The Slope Rating shows the difficulty of a course for an average golfer and is is calculated by comparing the Course Rating to the scores of bogey golfers. Most golf courses make the Slope Rating available to their guests; again, check their website or at the clubhouse.</p><br><br>
+<p id="header">The Slope Rating shows the difficulty of a course for an average golfer and is is calculated by comparing the Course Rating to the scores of bogey golfers. Most golf courses make the Slope Rating available to their guests; again, check their website or at the clubhouse.</p><br>
+<form align="center" method="post" action="currentHDCP.php">
+<input type="submit" value="Go To Main Page">
+</form>
 </body>
 </html>
