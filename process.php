@@ -24,14 +24,14 @@
     //echo "After checking for login currentHDCP<br>";
     //echo "Session parameters: " . json_encode($_SESSION) . "<br>";
     
-    //$servername = "oniddb.cws.oregonstate.edu";
-    //$username = "resnerb-db";
-    //$password = "7qKnFUFXqMYOmsTZ";
-    //$database = "resnerb-db";
-    $servername = "localhost";
-    $username = "root";
-    $password = "resnerb";
-    $database = "golfHDCP";
+    $servername = "oniddb.cws.oregonstate.edu";
+    $username = "resnerb-db";
+    $password = "7qKnFUFXqMYOmsTZ";
+    $database = "resnerb-db";
+    //$servername = "localhost";
+    //$username = "root";
+    //$password = "resnerb";
+    //$database = "golfHDCP";
     
     $conn = new mysqli($servername, $username, $password, $database);
     //Check if connection works
@@ -62,13 +62,17 @@
     {
         // Process adding a new course
         $courseName = $_POST['courseName'];
-        $slope = $_POST['slope']+0;
-        $rating = $_POST['rating']+0;
-        $par = $_POST['par']+0;
-        $sql = "INSERT INTO golfCourses (name, slope, rating, par)
-        VALUES ('$courseName', '$slope', '$rating', '$par')";
+        //Make sure the course name is not empty/blank before adding to database
+        if (strlen($courseName) > 0){
+            $slope = $_POST['slope']+0;
+            $rating = $_POST['rating']+0;
+            $par = $_POST['par']+0;
+            $sql = "INSERT INTO golfCourses (name, slope, rating, par)
+            VALUES ('$courseName', '$slope', '$rating', '$par')";
+            
+            $conn->query($sql);
+        }
         
-        $conn->query($sql);
         
         //Throws user back to currentHDCP.php
         header("Location: newScoreHDCP.php");

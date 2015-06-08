@@ -23,14 +23,14 @@
     
     //echo "Session parameters: " . json_encode($_SESSION) . "<br>";
     
-    //$servername = "oniddb.cws.oregonstate.edu";
-    //$username = "resnerb-db";
-    //$password = "7qKnFUFXqMYOmsTZ";
-    //$database = "resnerb-db";
-    $servername = "localhost";
-    $username = "root";
-    $password = "resnerb";
-    $database = "golfHDCP";
+    $servername = "oniddb.cws.oregonstate.edu";
+    $username = "resnerb-db";
+    $password = "7qKnFUFXqMYOmsTZ";
+    $database = "resnerb-db";
+    //$servername = "localhost";
+    //$username = "root";
+    //$password = "resnerb";
+    //$database = "golfHDCP";
     
     $conn = new mysqli($servername, $username, $password, $database);
     //Check if connection works
@@ -38,35 +38,38 @@
     {
         die ("Connection failed: " . $conn->connect_error);
     }
-    ?>
+?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
 <title>newScoreHDCP</title>
+<link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-<h1>Enter Information for a New Golf Course</h1>
+<h1 id="header">Enter Information for a New Golf Course</h1>
 
-<form method="post" action="process.php">
-<input type="hidden" name="process" value="addCourse">
-Course Name:<br>
-<input type="text" name="courseName">
+<form align="center" method="post" action="process.php">
+<input align="center" type="hidden" name="process" value="addCourse">
+<font face="Courier New">Course Name:</font><br>
+<input align="center" type="text" name="courseName">
 <br>
-Slope:<br>
-<input type="text" name="slope">
+<font face="Courier New">Slope:</font><br>
+<input align="center" type="text" name="slope">
 <br>
-Rating:<br>
-<input type="text" name="rating">
+<font face="Courier New">Rating:</font><br>
+<input align="center" type="text" name="rating">
 <br>
-Par:<br>
-<input type="text" name="par">
+<font face="Courier New">Par:</font><br>
+<input align="center" type="text" name="par">
 <br>
 <br>
-<input type="submit" value="Submit Course">
+<input align="center" type="submit" value="Submit Course Info">
 </form>
 
-</form>
+<br>
+<p id="header">The Course Rating is the numerical value given by the UGSA to each set of tees on a course. It approximates the number of strokes it should take a scratch golfer to finish the course. Most courses make this information available to their golfers; check the course website or inquire at the clubhouse.</p><br>
+<p id="header">The Slope Rating shows the difficulty of a course for an average golfer and is is calculated by comparing the Course Rating to the scores of bogey golfers. Most golf courses make the Slope Rating available to their guests; again, check their website or at the clubhouse.</p><br><br>
 </body>
 </html>

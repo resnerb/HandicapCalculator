@@ -23,14 +23,14 @@
     
     //echo "Session parameters: " . json_encode($_SESSION) . "<br>";
     
-    //$servername = "oniddb.cws.oregonstate.edu";
-    //$username = "resnerb-db";
-    //$password = "7qKnFUFXqMYOmsTZ";
-    //$database = "resnerb-db";
-    $servername = "localhost";
-    $username = "root";
-    $password = "resnerb";
-    $database = "golfHDCP";
+    $servername = "oniddb.cws.oregonstate.edu";
+    $username = "resnerb-db";
+    $password = "7qKnFUFXqMYOmsTZ";
+    $database = "resnerb-db";
+    //$servername = "localhost";
+    //$username = "root";
+    //$password = "resnerb";
+    //$database = "golfHDCP";
     
     $conn = new mysqli($servername, $username, $password, $database);
     //Check if connection works
@@ -45,31 +45,29 @@
 <head>
 <meta charset="utf-8" />
 <title>newScoreHDCP</title>
+<link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-<h1>Post a New Score</h1>
+<h1 id="header">Post a New Score</h1>
 
 <?php
-    echo "Entering scores for player: " . $_SESSION['user'] . "<br><br>";
 
     //Use golfCourses table
     $sql = "SELECT * FROM golfCourses";
     $result = $conn->query($sql);
     
-    echo "Number of rows in golfCourses table: " . $result->num_rows . "<br>";
-    
     if ($result->num_rows > 0) {
         
-        echo "<form method='post' action='process.php'>";
+        echo "<form align='center' method='post' action='process.php'>";
         echo "<input type='hidden' name='process' value='addScore'>";
         
-        echo "Date Played [YYYY-MM-DD]:<br>";
-        echo "<input type='text' name='datePlayed'>";
+        echo "<font face='Courier New'>Date Played [YYYY-MM-DD]:</font><br>";
+        echo "<input align='center' type='text' name='datePlayed'>";
         echo "<br>";
-        echo "Score:<br>";
-        echo "<input type='text' name='score'>";
+        echo "<font face='Courier New'>Score:</font><br>";
+        echo "<input align='center' type='text' name='score'>";
         echo "<br>";
-        echo "Course Name:<br>";
+        echo "<font face='Courier New'>Course Name:</font><br>";
         echo "<select name='courseName'>";
         
         while ($row = mysqli_fetch_array($result)) {
@@ -82,18 +80,17 @@
         echo "<br>";
         echo "<br>";
 
-        echo "<input type='submit' value='Submit Score'>";
+        echo "<input align='center' type='submit' value='Submit Score'>";
         echo "</form>";
         
     }
     else {
-        echo "There are no golf courses in the database. You must enter golf course information before entering a new score.";
+        echo "<font face='Courier New'>There are no golf courses in the database. You must enter course information before entering a new score.</font>";
     }
 ?>
-
-<form method="post" action="newCourseHDCP.php">
-<br>
-<input type="submit" value="Add New Course">
+<h2 id="header">Did you play a new course? Enter course information by clicking the button below.</h2><br>
+<form align="center" method="post" action="newCourseHDCP.php">
+    <input type="submit" value="Add New Course">
 </form>
 
 </body>
